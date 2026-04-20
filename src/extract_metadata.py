@@ -5,7 +5,7 @@ from pathlib import Path
 # 1. Setup Paths
 script_dir = Path(__file__).parent
 project_root = script_dir.parent
-data_file = project_root / "data" / "allbus_2023.dta"  # Ensure this matches your filename
+data_file = project_root / "data" / "allbus_2023.dta"
 output_file = project_root / "variable_dictionary.csv"
 
 
