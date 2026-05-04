@@ -1,0 +1,40 @@
+Section,ID,Description,Heads of Families,Wives,Children (-15),Young Persons (15-20),Unmarried Men/Widowers over 20,Total,A,B,C,D,E,F,G,H,Total
+Labour,1,"Lowest class, loafers, &c.",181,181,64,87,86,599,599,0,0,0,0,0,0,0,599
+Labour,2,Casual day-to-day labour,921,921,1447,355,651,4295,0,4226,69,0,0,0,0,0,4295
+Labour,3,Irregular labour,591,591,1071,266,232,2801,0,182,2562,0,57,0,0,0,2801
+Labour,4,"Regular work, low pay",711,711,1191,296,320,3229,0,10,0,3219,0,0,0,0,3229
+Labour,5,"Regular work, ordinary pay",1328,1328,2485,613,642,6396,0,13,0,281,6102,0,0,0,6396
+Labour,6,Foremen and responsible work,302,302,597,147,144,1492,0,0,0,0,70,1422,0,0,1492
+Artisans,7,Building trades,244,244,445,111,117,1161,0,57,172,132,686,114,0,0,1161
+Artisans,8,"Furniture, woodwork, &c.",300,300,524,129,142,1395,10,75,141,221,863,85,0,0,1395
+Artisans,9,Machinery and metals,198,198,348,84,94,922,0,38,47,132,508,197,0,0,922
+Artisans,10,Sundry artisans,421,421,739,182,200,1963,20,84,130,442,1147,140,0,0,1963
+Artisans,11,Dress,928,928,1751,434,441,4482,18,660,849,1621,1204,130,0,0,4482
+Artisans,12,Food preparation,421,421,840,209,200,2091,0,90,209,509,1163,120,0,0,2091
+Locomotion,13,Railway servants,64,64,129,32,30,320,0,0,0,30,260,30,0,0,320
+Locomotion,14,Road service,48,48,88,21,23,228,0,0,19,19,142,48,0,0,228
+Assistants,15,Shops and refreshment houses,169,169,300,74,80,792,0,48,19,160,495,70,0,0,792
+Other wages,16,"Police, soldiers, sub-officials",70,70,125,31,33,329,0,0,0,0,329,0,0,0,329
+Other wages,17,Seamen,226,226,325,79,108,964,0,26,112,334,492,0,0,0,964
+Other wages,18,Other wage earners,139,139,215,54,67,614,18,36,44,214,258,44,0,0,614
+Manufacture,19,Home industries (not employing),183,183,358,88,87,899,0,10,169,208,324,188,0,0,899
+Manufacture,20,Small employers,258,258,570,140,124,1350,0,0,0,22,324,831,173,0,1350
+Manufacture,21,Large employers,19,19,45,11,10,104,0,0,0,0,0,0,73,31,104
+Dealers,22,"Street sellers, &c.",199,199,350,86,95,929,0,223,380,121,196,9,0,0,929
+Dealers,23,General dealers,78,78,156,39,37,388,0,11,60,39,229,49,0,0,388
+Dealers,24,Small shops,366,366,740,182,175,1829,0,9,0,220,1089,460,51,0,1829
+Dealers,25,Large shops (emp. assistants),85,85,165,40,40,415,0,0,0,0,50,158,207,0,415
+Refreshments,26,Coffee and boarding houses,38,38,54,13,19,161,0,0,0,9,126,17,9,0,161
+Refreshments,27,Licensed houses,132,132,223,56,63,606,0,10,29,9,55,156,350,36,606
+Salaried &c.,28,Clerks and agents,163,163,296,72,78,772,0,0,43,77,286,313,53,0,772
+Salaried &c.,29,Subordinate professional,44,44,103,25,21,237,0,0,0,22,53,43,54,22,237
+Salaried &c.,30,Professional,7,7,11,2,4,31,0,0,26,0,0,8,8,15,31
+No work,31,Ill and no occupation,40,40,61,15,19,175,0,71,0,52,26,0,26,0,175
+No work,32,Independent,10,10,11,2,5,38,0,0,0,0,15,8,15,0,38
+Females,33,Semi-domestic employment,388,0,547,135,0,1070,0,511,219,253,87,0,0,0,1070
+Females,34,Dress,204,0,281,68,0,553,0,131,146,175,101,0,0,0,553
+Females,35,Small trades,128,0,193,48,0,369,5,150,64,113,32,5,0,0,369
+Females,36,Employing and professional,15,0,17,4,0,36,0,0,0,4,23,5,4,0,36
+Females,37,Supported,55,0,71,18,0,144,0,10,14,81,39,0,0,0,144
+Females,38,Independent,2,0,5,2,0,9,0,0,0,0,0,0,9,0,9
+Females,39,Other adult women,0,0,0,0,0,3390,48,510,423,672,1295,359,75,8,3390
