@@ -1,0 +1,40 @@
+Section,ID,Description,Heads of Families,Wives,Children (under 15),Young Persons (15-20),Unmarried Men over 20 and Widowers,Total
+Labour,1,"Lowest class, loafers, &c.",224,224,73,104,91,716
+Labour,2,Casual day-to-day labour,673,673,1215,302,350,3213
+Labour,3,Irregular labour,492,492,974,240,200,2398
+Labour,4,"Regular work, low pay",688,688,1183,294,279,3132
+Labour,5,"Regular work, ordinary pay",2886,2886,5418,1345,1171,13706
+Labour,6,Foremen and responsible work,558,558,1037,256,227,2636
+Artisans,7,Building trades,1290,1290,2445,604,523,6152
+Artisans,8,"Furniture, wood-work, &c.",1166,1166,2351,582,474,5739
+Artisans,9,Machinery and metals,819,819,1585,394,332,3949
+Artisans,10,Sundry artisans,1243,1243,2326,574,504,5890
+Artisans,11,Dress,1227,1227,2362,582,498,5896
+Artisans,12,Food preparation,1020,1020,1943,482,413,4878
+Locomotion,13,Railway service,188,188,370,94,76,916
+Locomotion,14,Road service,378,378,759,186,153,1854
+Assistants,15,Shops and refreshment houses,831,831,1565,386,336,3949
+Other wages,16,"Police, soldiers, and sub-officials",441,441,806,200,180,2068
+Other wages,17,Seamen,327,327,542,134,133,1463
+Other wages,18,Other wage earners,375,375,584,146,152,1632
+Manufacture &c.,19,"Home industries, not employing",396,396,812,202,160,1966
+Manufacture &c.,20,Small employers,648,648,1471,366,262,3395
+Manufacture &c.,21,Large employers,89,89,240,60,36,514
+Dealers,22,"Street sellers, &c.",277,277,544,136,113,1347
+Dealers,23,General dealers,498,498,1095,272,201,2564
+Dealers,24,Small shops,663,663,1283,318,270,3197
+Dealers,25,Large shops employing assistants,511,511,1046,260,207,2535
+Refreshments,26,Coffee and boarding houses,46,46,109,26,19,246
+Refreshments,27,Licensed houses,223,223,384,96,90,1016
+Salaried &c.,28,Clerks and agents,1232,1232,2334,580,500,5878
+Salaried &c.,29,Subordinate professional,334,334,636,158,135,1597
+Salaried &c.,30,Professional,121,121,256,64,49,611
+No work,31,Ill and no occupation,59,59,123,32,24,297
+No work,32,Independent,101,101,136,34,41,413
+Females,33,Semi-domestic employment,651,0,986,244,0,1881
+Females,34,Dress,484,0,705,178,0,1367
+Females,35,Small trades,184,0,263,66,0,513
+Females,36,Employing and professional,56,0,112,28,0,196
+Females,37,Supported,146,0,216,54,0,416
+Females,38,Independent,105,0,150,38,0,293
+Females,39,Other adult women,0,0,0,0,0,9892
