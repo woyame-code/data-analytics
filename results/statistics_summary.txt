@@ -12,8 +12,20 @@ p-value: 4.4751e-08
 Conclusion: There is a significant difference between sections (reject H0)
 
 
-Shapiro-Wilk Test for Normality on Regression Residuals
+Shapiro-Wilk Test for Normality on Regression Residuals (Base Model)
 -------------------------------------------------------
 Test Statistic: 0.9423
 p-value: 4.5952e-10
 Conclusion: The residuals do not look Gaussian (reject H0)
+
+
+Shapiro-Wilk Test for Normality on Regression Residuals (Transformed Model)
+-------------------------------------------------------
+Test Statistic: 0.9842
+p-value: 1.0606e-03
+Conclusion: The residuals do not look Gaussian (reject H0)
+
+
+Model Comparison
+----------------
+The transformed model (log1p) better fulfills the statistical prerequisites (normality of residuals).

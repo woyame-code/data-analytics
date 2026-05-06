@@ -15,65 +15,95 @@ def run_regression():
 
     df = pd.read_csv(input_file)
 
+    # Patsy intercepts 'C' as the column 'C' instead of the Categorical wrapper if column 'C' exists.
+    # We drop the class count columns to avoid this conflict.
+    columns_to_drop = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+    df = df.drop(columns=[col for col in columns_to_drop if col in df.columns])
+
     # Ensure directories exist
     os.makedirs(plots_dir, exist_ok=True)
     os.makedirs(os.path.dirname(model_output_file), exist_ok=True)
 
-    # Formula: poverty_rate ~ kids_per_household + unmarried_ratio + Section_Class
-    # The column is named 'Section_Class' instead of 'Section'
-    formula = 'poverty_rate ~ kids_per_household + unmarried_ratio + Section_Class'
+    import numpy as np
 
-    # Fit the multiple linear regression model
-    model = smf.ols(formula=formula, data=df)
-    results = model.fit()
+    df['log_poverty_rate'] = np.log1p(df['poverty_rate'])
 
-    # 1. Save coefficients table and summary
-    # We can write the summary as text to a CSV for simplicity, or extract the tables.
-    # The prompt asks for "Koeffizienten-Tabelle und die Modell-Zusammenfassung (summary) als CSV oder Textdatei"
-    # We will save the summary as text in a CSV named file.
-    with open(model_output_file, 'w') as f:
-        f.write(results.summary().as_csv())
+    # Formulas
+    formula_base = 'poverty_rate ~ kids_per_household + unmarried_ratio + C(Section_Class)'
+    formula_transformed = 'log_poverty_rate ~ kids_per_household + unmarried_ratio + C(Section_Class)'
 
-    # 2. Residual Plot
-    # Calculate residuals and fitted values
-    residuals = results.resid
-    fitted = results.fittedvalues
+    # Fit both models with robust standard errors (HC3)
+    model_base = smf.ols(formula=formula_base, data=df)
+    results_base = model_base.fit(cov_type='HC3')
 
-    plt.figure(figsize=(10, 6))
-    sns.residplot(x=fitted, y=residuals, lowess=True,
-                  scatter_kws={'alpha': 0.5}, line_kws={'color': 'red', 'lw': 2})
-    plt.title('Residuals vs Fitted Values')
-    plt.xlabel('Fitted Values')
-    plt.ylabel('Residuals')
-    plt.axhline(0, color='black', linestyle='--')
-    plt.tight_layout()
-    plt.savefig(os.path.join(plots_dir, 'regression_residuals.png'))
-    plt.close()
+    model_transformed = smf.ols(formula=formula_transformed, data=df)
+    results_transformed = model_transformed.fit(cov_type='HC3')
 
-    # 3. Shapiro-Wilk test on residuals
+    # Calculate residuals
+    residuals_base = results_base.resid
+    residuals_transformed = results_transformed.resid
+
+    # 1. Shapiro-Wilk test on residuals
     from scipy.stats import shapiro
-    stat, p_value = shapiro(residuals)
+    stat_base, p_value_base = shapiro(residuals_base)
+    stat_trans, p_value_trans = shapiro(residuals_transformed)
+
     stats_file = 'results/statistics_summary.txt'
     with open(stats_file, 'a') as f:
-        f.write("\n\nShapiro-Wilk Test for Normality on Regression Residuals\n")
+        f.write("\n\nShapiro-Wilk Test for Normality on Regression Residuals (Base Model)\n")
         f.write("-------------------------------------------------------\n")
-        f.write(f"Test Statistic: {stat:.4f}\n")
-        f.write(f"p-value: {p_value:.4e}\n")
+        f.write(f"Test Statistic: {stat_base:.4f}\n")
+        f.write(f"p-value: {p_value_base:.4e}\n")
 
         alpha = 0.05
-        if p_value > alpha:
+        if p_value_base > alpha:
             f.write("Conclusion: The residuals look Gaussian (fail to reject H0)\n")
         else:
             f.write("Conclusion: The residuals do not look Gaussian (reject H0)\n")
 
-    # 4. Q-Q Plot of the residuals
+        f.write("\n\nShapiro-Wilk Test for Normality on Regression Residuals (Transformed Model)\n")
+        f.write("-------------------------------------------------------\n")
+        f.write(f"Test Statistic: {stat_trans:.4f}\n")
+        f.write(f"p-value: {p_value_trans:.4e}\n")
+
+        if p_value_trans > alpha:
+            f.write("Conclusion: The residuals look Gaussian (fail to reject H0)\n")
+        else:
+            f.write("Conclusion: The residuals do not look Gaussian (reject H0)\n")
+
+        f.write("\n\nModel Comparison\n")
+        f.write("----------------\n")
+        if p_value_trans > p_value_base:
+            f.write("The transformed model (log1p) better fulfills the statistical prerequisites (normality of residuals).\n")
+        else:
+            f.write("The base model better fulfills the statistical prerequisites (normality of residuals).\n")
+
+    # 2. Q-Q Plots
     import statsmodels.api as sm
+
+    # Base model Q-Q plot
     plt.figure(figsize=(8, 8))
-    sm.qqplot(residuals, line='45', fit=True)
-    plt.title('Q-Q Plot of Regression Residuals')
+    sm.qqplot(residuals_base, line='45', fit=True)
+    plt.title('Q-Q Plot of Regression Residuals (Base Model)')
     plt.tight_layout()
-    plt.savefig(os.path.join(plots_dir, 'regression_qqplot.png'))
+    plt.savefig(os.path.join(plots_dir, 'base_model_qqplot.png'))
     plt.close('all')
+
+    # Transformed model Q-Q plot
+    plt.figure(figsize=(8, 8))
+    sm.qqplot(residuals_transformed, line='45', fit=True)
+    plt.title('Q-Q Plot of Regression Residuals (Transformed Model)')
+    plt.tight_layout()
+    plt.savefig(os.path.join(plots_dir, 'transformed_model_qqplot.png'))
+    plt.close('all')
+
+    # 3. Output Final Regression Report
+    final_report_file = 'results/final_regression_report.txt'
+    with open(final_report_file, 'w') as f:
+        if p_value_trans > p_value_base:
+            f.write(results_transformed.summary().as_text())
+        else:
+            f.write(results_base.summary().as_text())
 
     print("Regression analysis completed. Outputs saved.")
 
