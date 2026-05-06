@@ -3,3 +3,17 @@ Shapiro-Wilk Test for Normality on poverty_rate
 Test Statistic: 0.8229
 p-value: 9.1119e-19
 Conclusion: The sample does not look Gaussian (reject H0)
+
+
+Kruskal-Wallis Test on poverty_rate across Section_Class
+------------------------------------------------------
+Test Statistic: 68.1526
+p-value: 4.4751e-08
+Conclusion: There is a significant difference between sections (reject H0)
+
+
+Shapiro-Wilk Test for Normality on Regression Residuals
+-------------------------------------------------------
+Test Statistic: 0.9423
+p-value: 4.5952e-10
+Conclusion: The residuals do not look Gaussian (reject H0)

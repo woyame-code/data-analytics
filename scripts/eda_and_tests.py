@@ -31,9 +31,10 @@ def run_eda_and_tests():
     # 2. Correlation Heatmap (only numeric columns)
     numeric_df = df.select_dtypes(include=['number'])
     plt.figure(figsize=(12, 10))
-    corr_matrix = numeric_df.corr()
+    # Replace Pearson correlation with Spearman rank correlation
+    corr_matrix = numeric_df.corr(method='spearman')
     sns.heatmap(corr_matrix, annot=False, cmap='coolwarm', fmt=".2f")
-    plt.title('Correlation Heatmap')
+    plt.title('Spearman Correlation Heatmap')
     plt.tight_layout()
     plt.savefig(os.path.join(plots_dir, 'correlation_heatmap.png'))
     plt.close()

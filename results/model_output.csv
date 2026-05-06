@@ -1,0 +1,38 @@
+                      OLS Regression Results
+Dep. Variable:   ,poverty_rate    ,  R-squared:         ,   0.241
+Model:           ,OLS             ,  Adj. R-squared:    ,   0.195
+Method:          ,Least Squares   ,  F-statistic:       ,   5.200
+Date:            ,Wed, 06 May 2026,  Prob (F-statistic):,7.28e-11
+Time:            ,13:28:35        ,  Log-Likelihood:    , -80.295
+No. Observations:,   331          ,  AIC:               ,   200.6
+Df Residuals:    ,   311          ,  BIC:               ,   276.6
+Df Model:        ,    19          ,                     ,
+Covariance Type: ,nonrobust       ,                     ,
+                                ,   coef   , std err ,    t    ,P>|t| ,  [0.025 ,  0.975]
+Intercept                       ,    0.3125,    0.081,    3.838, 0.000,    0.152,    0.473
+Section_Class[T.Artisans]       ,   -0.0316,    0.063,   -0.498, 0.619,   -0.156,    0.093
+Section_Class[T.Assistants]     ,   -0.1435,    0.118,   -1.217, 0.224,   -0.375,    0.088
+Section_Class[T.Dealers]        ,   -0.0065,    0.076,   -0.085, 0.932,   -0.155,    0.142
+Section_Class[T.Females]        ,    0.2220,    0.073,    3.054, 0.002,    0.079,    0.365
+Section_Class[T.Labour]         ,    0.3468,    0.069,    5.045, 0.000,    0.212,    0.482
+Section_Class[T.Locomotion]     ,   -0.1606,    0.095,   -1.688, 0.092,   -0.348,    0.027
+Section_Class[T.Manufacture]    ,   -0.1871,    0.113,   -1.655, 0.099,   -0.409,    0.035
+Section_Class[T.Manufacture &c.],   -0.2025,    0.136,   -1.494, 0.136,   -0.469,    0.064
+Section_Class[T.Manufacturers]  ,   -0.0662,    0.187,   -0.353, 0.724,   -0.435,    0.302
+Section_Class[T.No work]        ,    0.1494,    0.095,    1.571, 0.117,   -0.038,    0.336
+Section_Class[T.Other]          ,   -0.1613,    0.239,   -0.674, 0.501,   -0.632,    0.309
+Section_Class[T.Other wages]    ,   -0.1526,    0.083,   -1.843, 0.066,   -0.315,    0.010
+Section_Class[T.Refreshment]    ,   -0.2829,    0.187,   -1.512, 0.132,   -0.651,    0.085
+Section_Class[T.Refreshments]   ,   -0.3029,    0.107,   -2.841, 0.005,   -0.513,   -0.093
+Section_Class[T.Salaried]       ,   -0.2730,    0.187,   -1.460, 0.145,   -0.641,    0.095
+Section_Class[T.Salaried &c.]   ,   -0.2052,    0.090,   -2.290, 0.023,   -0.382,   -0.029
+Section_Class[T.Total]          ,   -0.0636,    0.320,   -0.199, 0.843,   -0.694,    0.566
+kids_per_household              ,   -0.0288,    0.039,   -0.737, 0.461,   -0.106,    0.048
+unmarried_ratio                 ,    0.7984,    0.531,    1.503, 0.134,   -0.247,    1.844
+Omnibus:      ,100.812,  Durbin-Watson:     ,   1.635
+Prob(Omnibus):, 0.000 ,  Jarque-Bera (JB):  , 570.164
+Skew:         , 1.135 ,  Prob(JB):          ,1.55e-124
+Kurtosis:     , 9.016 ,  Cond. No.          ,    63.9
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
