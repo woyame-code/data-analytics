@@ -1,0 +1,5 @@
+Shapiro-Wilk Test for Normality on poverty_rate
+----------------------------------------------
+Test Statistic: 0.8229
+p-value: 9.1119e-19
+Conclusion: The sample does not look Gaussian (reject H0)
