@@ -20,110 +20,115 @@ def create_presentation_plots():
     color_highlight = '#b53131' # Red
 
     # -------------------------------------------------------------
-    # 1. Das Londoner Armuts-Rad (Donut Chart)
+    # 1. Detailed Welfare Donut (All Classes A-H)
     # -------------------------------------------------------------
-    total_poverty = classes_df[['A', 'B', 'C', 'D']].sum().sum()
-    total_above = classes_df[['E', 'F', 'G', 'H']].sum().sum()
+    class_totals = classes_df[['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']].sum()
 
-    fig, ax = plt.subplots(figsize=(8, 8))
-    sizes = [total_poverty, total_above]
-    labels = ['In Poverty (A-D)', 'Above Poverty (E-H)']
-    colors = [color_poverty, color_above]
+    fig, ax = plt.subplots(figsize=(10, 10))
+    labels = [f'Class {c}' for c in class_totals.index]
 
-    wedges, texts, autotexts = ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%',
+    # Sequential palette from dark (poverty) to light (wealth)
+    cmap = plt.get_cmap('YlOrRd_r') # Red/Dark for poverty, Yellow/Light for wealth
+    # Let's map 8 classes across the colormap
+    colors = [cmap(i) for i in np.linspace(0.1, 0.9, 8)]
+
+    wedges, texts, autotexts = ax.pie(class_totals, labels=labels, colors=colors, autopct='%1.1f%%',
                                       startangle=140, pctdistance=0.85,
-                                      textprops={'fontsize': 14, 'weight': 'bold'},
+                                      textprops={'fontsize': 12, 'weight': 'bold'},
                                       wedgeprops=dict(width=0.3, edgecolor='w'))
 
     for text in texts:
-        text.set_fontsize(16)
+        text.set_fontsize(14)
 
-    ax.set_title('Das Londoner Armuts-Rad', fontsize=20, weight='bold', pad=20)
+    ax.set_title('Das Londoner Armuts-Rad (Klassen A-H)', fontsize=20, weight='bold', pad=20)
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'poverty_donut.png'), dpi=300, bbox_inches='tight')
     plt.close()
 
     # -------------------------------------------------------------
-    # 2. Die Job-Landschaft (Treemap)
+    # 2. Die Job-Landschaft (Treemap Refined: Size = Heads, Color = Poverty Rate)
     # -------------------------------------------------------------
-    # Filter professions_total to exclude the grand total row
     job_df = professions_df.dropna(subset=['Description']).copy()
     job_df = job_df[job_df['Description'] != 'Total']
 
-    # Fill class if needed
     job_df['Class'] = job_df['Class'].ffill()
-
-    # Wir brauchen die Verteilung der 'Heads of Families' nach Sektionen (Description)
     job_df['Heads of Famlies'] = pd.to_numeric(job_df['Heads of Famlies'], errors='coerce').fillna(0)
-    job_df = job_df[job_df['Heads of Famlies'] > 0]
 
-    # Grouping to avoid too many small boxes (Optional: taking top 20 or grouping)
+    for c in ['A', 'B', 'C', 'D', 'Total']:
+        job_df[c] = pd.to_numeric(job_df[c], errors='coerce').fillna(0)
+
+    job_df['poverty_rate'] = (job_df['A'] + job_df['B'] + job_df['C'] + job_df['D']) / job_df['Total']
+    job_df['poverty_rate'] = job_df['poverty_rate'].fillna(0)
+
+    job_df = job_df[job_df['Heads of Famlies'] > 0]
     job_data = job_df.sort_values(by='Heads of Famlies', ascending=False)
 
-    plt.figure(figsize=(16, 10))
-    cmap = plt.cm.get_cmap('YlOrRd')
-    mini = min(job_data['Heads of Famlies'])
-    maxi = max(job_data['Heads of Famlies'])
+    fig, ax = plt.subplots(figsize=(16, 10))
+    cmap = plt.get_cmap('RdYlBu_r') # Red for high poverty, Blue for low poverty
+    mini = 0.0
+    maxi = 1.0
     norm = plt.Normalize(vmin=mini, vmax=maxi)
-    colors = [cmap(norm(value)) for value in job_data['Heads of Famlies']]
+    colors = [cmap(norm(value)) for value in job_data['poverty_rate']]
 
     squarify.plot(sizes=job_data['Heads of Famlies'],
                   label=job_data['Description'],
                   alpha=0.8,
                   color=colors,
-                  text_kwargs={'fontsize':9, 'weight':'bold', 'wrap':True})
-    plt.title('Die Job-Landschaft (Heads of Families)', fontsize=24, weight='bold', pad=20)
+                  text_kwargs={'fontsize':9, 'weight':'bold', 'wrap':True},
+                  ax=ax)
+
+    # Add colorbar
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+    cbar = fig.colorbar(sm, ax=ax, orientation='vertical', fraction=0.03, pad=0.04)
+    cbar.set_label('Armutsrisiko (Poverty Rate)', fontsize=14, weight='bold')
+
+    plt.title('Die Job-Landschaft nach Armutsrisiko', fontsize=24, weight='bold', pad=20)
     plt.axis('off')
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'job_landscape_treemap.png'), dpi=300, bbox_inches='tight')
     plt.close()
 
     # -------------------------------------------------------------
-    # 3. Vergleich der Lebenswelten (Pictogram-Style Bar Chart)
+    # 3. Children by Occupation (Bar Chart)
     # -------------------------------------------------------------
-    # IDs in the raw file are in the 'Unnamed: 1' column which has index 1.
-    id_col = professions_df.columns[1]
-
-    # Clean up IDs
     prof_df_clean = professions_df.copy()
-    prof_df_clean[id_col] = pd.to_numeric(prof_df_clean[id_col], errors='coerce')
+    prof_df_clean['Class'] = prof_df_clean['Class'].ffill()
 
-    labour_ids = [1, 2, 3, 4, 5]
-    salaried_ids = [28, 29, 30]
+    # Filter out empty or total rows
+    prof_df_clean = prof_df_clean.dropna(subset=['Description'])
+    prof_df_clean = prof_df_clean[prof_df_clean['Description'] != 'Total']
 
-    labour_df = prof_df_clean[prof_df_clean[id_col].isin(labour_ids)]
-    salaried_df = prof_df_clean[prof_df_clean[id_col].isin(salaried_ids)]
+    # Calculate kids per household by main class
+    prof_df_clean['Children -15'] = pd.to_numeric(prof_df_clean['Children -15'], errors='coerce').fillna(0)
+    prof_df_clean['Heads of Famlies'] = pd.to_numeric(prof_df_clean['Heads of Famlies'], errors='coerce').fillna(0)
 
-    labour_kids = pd.to_numeric(labour_df['Children -15'], errors='coerce').sum()
-    labour_heads = pd.to_numeric(labour_df['Heads of Famlies'], errors='coerce').sum()
-    labour_avg = labour_kids / labour_heads if labour_heads > 0 else 0
+    grouped = prof_df_clean.groupby('Class').agg({
+        'Children -15': 'sum',
+        'Heads of Famlies': 'sum'
+    }).reset_index()
 
-    salaried_kids = pd.to_numeric(salaried_df['Children -15'], errors='coerce').sum()
-    salaried_heads = pd.to_numeric(salaried_df['Heads of Famlies'], errors='coerce').sum()
-    salaried_avg = salaried_kids / salaried_heads if salaried_heads > 0 else 0
+    grouped['kids_per_household'] = grouped['Children -15'] / grouped['Heads of Famlies']
+    grouped = grouped[grouped['Heads of Famlies'] > 0]
+    grouped = grouped.sort_values(by='kids_per_household', ascending=True)
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    groups = ['Arbeiterfamilie\n(Labour)', 'Angestelltenfamilie\n(Salaried)']
-    avgs = [labour_avg, salaried_avg]
-    colors = [color_poverty, color_above]
-
-    bars = ax.barh(groups, avgs, color=colors, height=0.5)
+    bars = ax.barh(grouped['Class'], grouped['kids_per_household'], color=color_above)
 
     for bar in bars:
         width = bar.get_width()
         ax.annotate(f'{width:.2f} Kinder',
                     xy=(width, bar.get_y() + bar.get_height() / 2),
-                    xytext=(10, 0),
+                    xytext=(5, 0),
                     textcoords="offset points",
-                    ha='left', va='center', fontsize=14, weight='bold')
+                    ha='left', va='center', fontsize=12, weight='bold')
 
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.spines['bottom'].set_visible(False)
-    ax.xaxis.set_visible(False)
-    ax.tick_params(axis='y', labelsize=16)
+    ax.tick_params(axis='y', labelsize=14)
+    ax.set_xlabel('Durchschnittliche Kinder pro Haushalt', fontsize=14)
 
-    plt.title('Vergleich der Lebenswelten: Kinder pro Haushalt', fontsize=20, weight='bold', pad=20)
+    plt.title('Kinder pro Haushalt nach Berufsgruppe', fontsize=20, weight='bold', pad=20)
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'living_environments_bar.png'), dpi=300, bbox_inches='tight')
     plt.close()
@@ -131,9 +136,13 @@ def create_presentation_plots():
     # -------------------------------------------------------------
     # 4. Die 'unsichtbaren' Frauen (Horizontal Bar Chart)
     # -------------------------------------------------------------
+    # IDs in the raw file are in the 'Unnamed: 1' column which has index 1.
+    id_col = professions_df.columns[1]
+
+    prof_df_clean[id_col] = pd.to_numeric(prof_df_clean[id_col], errors='coerce')
     female_ids = [33, 34, 35, 36, 37, 38]
     female_df = prof_df_clean[prof_df_clean[id_col].isin(female_ids)].copy()
-    female_df['Heads of Famlies'] = pd.to_numeric(female_df['Heads of Famlies'], errors='coerce').fillna(0)
+
     female_df = female_df.sort_values(by='Heads of Famlies', ascending=True)
 
     fig, ax = plt.subplots(figsize=(12, 7))
@@ -158,46 +167,49 @@ def create_presentation_plots():
     plt.close()
 
     # -------------------------------------------------------------
-    # 5. Stadt der Kontraste (Gauge/Tacho-Chart Alternative)
+    # 5. London Poverty Comparison (Horizontal Bar Chart for all districts)
     # -------------------------------------------------------------
-    # To create a high-contrast comparison (St George vs Hackney)
-    st_george_row = classes_df[classes_df['Borough'] == "St George's-in-the-East"]
-    hackney_row = classes_df[classes_df['Borough'] == 'Hackney']
+    districts_df = classes_df.copy()
 
-    def get_pov_rate(row):
-        pov = row[['A', 'B', 'C', 'D']].sum(axis=1).values[0]
-        tot = row['Total'].values[0]
-        return pov / tot * 100
+    # Calculate poverty rate for each district
+    for c in ['A', 'B', 'C', 'D', 'Total']:
+        districts_df[c] = pd.to_numeric(districts_df[c], errors='coerce').fillna(0)
 
-    rate_st_george = get_pov_rate(st_george_row)
-    rate_hackney = get_pov_rate(hackney_row)
+    districts_df['poverty_rate'] = (districts_df['A'] + districts_df['B'] + districts_df['C'] + districts_df['D']) / districts_df['Total'] * 100
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    # Calculate overall London average
+    total_pov = districts_df[['A', 'B', 'C', 'D']].sum().sum()
+    total_pop = districts_df['Total'].sum()
+    london_avg = (total_pov / total_pop) * 100 if total_pop > 0 else 0
 
-    # We will use a dual bar chart to represent the contrast clearly
-    y_pos = np.arange(2)
-    rates = [rate_st_george, rate_hackney]
-    boroughs = ["St George's-in-the-East", "Hackney"]
-    colors = [color_poverty, color_above]
+    districts_df = districts_df.sort_values('poverty_rate', ascending=True)
 
-    bars = ax.barh(y_pos, rates, color=colors, height=0.6)
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    # Color bars based on whether they are above or below average
+    bar_colors = [color_poverty if rate > london_avg else color_above for rate in districts_df['poverty_rate']]
+
+    bars = ax.barh(districts_df['Borough'], districts_df['poverty_rate'], color=bar_colors, height=0.7)
+
+    # Add vertical line for London average
+    ax.axvline(london_avg, color=color_highlight, linestyle='--', linewidth=2, zorder=0)
+    ax.text(london_avg + 0.5, len(districts_df) - 1, f'London Average: {london_avg:.1f}%',
+            color=color_highlight, fontsize=12, weight='bold', va='center')
 
     for bar in bars:
         width = bar.get_width()
-        ax.annotate(f'{width:.1f}% Armut',
+        ax.annotate(f'{width:.1f}%',
                     xy=(width, bar.get_y() + bar.get_height() / 2),
-                    xytext=(-10, 0),
+                    xytext=(5, 0),
                     textcoords="offset points",
-                    ha='right', va='center', color='white', fontsize=16, weight='bold')
+                    ha='left', va='center', fontsize=12)
 
-    ax.set_yticks(y_pos)
-    ax.set_yticklabels(boroughs, fontsize=16, weight='bold')
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
-    ax.spines['bottom'].set_visible(False)
-    ax.xaxis.set_visible(False)
+    ax.tick_params(axis='y', labelsize=14)
+    ax.set_xlabel('Armutsquote (%)', fontsize=14)
 
-    plt.title('Stadt der Kontraste: Armutsquote', fontsize=20, weight='bold', pad=20)
+    plt.title('Armutsquote pro Distrikt im Vergleich', fontsize=20, weight='bold', pad=20)
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'city_contrasts_gauge.png'), dpi=300, bbox_inches='tight')
     plt.close()

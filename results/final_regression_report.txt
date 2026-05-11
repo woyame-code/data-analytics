@@ -4,7 +4,7 @@ Dep. Variable:       log_poverty_rate   R-squared:                       0.238
 Model:                            OLS   Adj. R-squared:                  0.192
 Method:                 Least Squares   F-statistic:                     16.67
 Date:                Mon, 11 May 2026   Prob (F-statistic):           5.42e-37
-Time:                        09:30:52   Log-Likelihood:                 46.354
+Time:                        10:20:50   Log-Likelihood:                 46.354
 No. Observations:                 331   AIC:                            -52.71
 Df Residuals:                     311   BIC:                             23.33
 Df Model:                          19
